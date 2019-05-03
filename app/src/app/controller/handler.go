@@ -76,6 +76,7 @@ func (h *Handler) userByRequest(r *http.Request) (*model.User, error) {
 }
 
 func (h *Handler) handleSuccess(w http.ResponseWriter, data interface{}) {
+	/* DEV */ enableCors(&w)
 	w.WriteHeader(200)
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	if err := json.NewEncoder(w).Encode(data); err != nil {
@@ -84,6 +85,7 @@ func (h *Handler) handleSuccess(w http.ResponseWriter, data interface{}) {
 }
 
 func (h *Handler) handleError(w http.ResponseWriter, err error, code int) {
+	/* DEV */ enableCors(&w)
 	w.WriteHeader(code)
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	w.Header().Set("X-Content-Type-Options", "nosniff")
@@ -115,4 +117,8 @@ func (h *Handler) txScope(f func(*sql.Tx) error) (err error) {
 	}()
 	err = f(tx)
 	return
+}
+
+func enableCors(w *http.ResponseWriter) {
+	(*w).Header().Set("Access-Control-Allow-Origin", "*")
 }
