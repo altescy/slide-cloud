@@ -10,6 +10,7 @@
 <script lang="ts">
 import Vue from 'vue';
 import { mapState, mapMutations } from 'vuex';
+import * as VuexMutation from '@/vuex/mutation_types';
 import SignupForm from '@/components/SignupForm.vue';
 import SigninForm from '@/components/SigninForm.vue';
 export default Vue.extend({
@@ -22,7 +23,7 @@ export default Vue.extend({
     ...mapState(['modalType']),
   },
   methods: {
-    ...mapMutations(['closeModal']),
+    ...mapMutations({closeModal: VuexMutation.CLOSE_MODAL}),
   },
 });
 </script>

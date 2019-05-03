@@ -6,7 +6,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { mapGetters } from 'vuex';
+import { mapState } from 'vuex';
 import * as Model from '@/model';
 
 declare global {
@@ -24,7 +24,7 @@ export default Vue.extend({
     return { is_script_loading: false };
   },
   computed: {
-    ...mapGetters(['editor_content', 'slide_number', 'view_mode']),
+    ...mapState(['editor_content', 'slide_number', 'view_mode']),
   },
   created() {
     this.$root.$on('loading_script', (e: Event) => { this.is_script_loading = true; });

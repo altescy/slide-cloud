@@ -18,6 +18,7 @@ import Vue from 'vue';
 import { mapActions, mapState, mapMutations } from 'vuex';
 import axios from 'axios';
 import * as VuexAction from '@/vuex/action_types';
+import * as VuexMutation from '@/vuex/mutation_types';
 import * as Model from '@/model';
 
 export default Vue.extend({
@@ -33,7 +34,11 @@ export default Vue.extend({
   },
   methods: {
     ...mapActions({signin: VuexAction.SIGN_IN}),
-    ...mapMutations(['closeModal', 'showSigninError', 'hideSigninError']),
+    ...mapMutations({
+      closeModal: VuexMutation.CLOSE_MODAL,
+      showSigninError: VuexMutation.SHOW_SIGNIN_ERROR,
+      hideSigninError: VuexMutation.HIDE_SIGNIN_ERROR,
+    }),
     async postSignin() {
       const data: Model.SigninInfo = {
         username: this.username,

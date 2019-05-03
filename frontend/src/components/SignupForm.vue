@@ -18,6 +18,7 @@ import Vue from 'vue';
 import { mapActions, mapState, mapMutations } from 'vuex';
 import axios from 'axios';
 import * as VuexAction from '@/vuex/action_types';
+import * as VuexMutation from '@/vuex/mutation_types';
 import * as Model from '@/model';
 export default Vue.extend({
   name: 'SignupForm',
@@ -32,7 +33,7 @@ export default Vue.extend({
   },
   methods: {
     ...mapActions({signup: VuexAction.SIGN_UP}),
-    ...mapMutations(['hideSignupError']),
+    ...mapMutations({hideSignupError: VuexMutation.HIDE_SIGNUP_ERROR}),
     async postSignup() {
       const data: Model.SigninInfo = {
         username: this.username,

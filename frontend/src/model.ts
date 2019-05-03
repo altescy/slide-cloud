@@ -1,3 +1,5 @@
+import * as VuexState from './vuex/state_types';
+
 export type ModalType = 'signup' | 'signin';
 
 export interface User {

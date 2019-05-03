@@ -9,43 +9,45 @@ import * as VuexAction from '@/vuex/action_types';
 Vue.use(Vuex);
 
 
+const initialState: Model.State = {
+  user: null,
+  hasSigninError: false,
+  hasSignupError: false,
+  isModalOpen: false,
+  modalType: 'signup',
+  editor_content: '# Hello, world.',
+  slide_number: { h: 0, v: 0 },
+  view_mode: { mode: 'edit'},
+};
+
 export default new Vuex.Store({
-  state: {
-    user: null,
-    hasSigninError: false,
-    hasSignupError: false,
-    isModalOpen: false,
-    modalType: 'signup',
-    editor_content: '# Hello, world.',
-    slide_number: { h: 0, v: 0 },
-    view_mode: { mode: 'edit'},
-  },
+  state: initialState,
   mutations: {
-    openModal(state) {
+    [VuexMutation.OPEN_MODAL](state: Model.State) {
       state.isModalOpen = true;
     },
-    closeModal(state) {
+    [VuexMutation.CLOSE_MODAL](state: Model.State) {
       state.isModalOpen = false;
     },
-    setModalType(state, type) {
+    [VuexMutation.SET_MODAL_TYPE](state: Model.State, type: Model.ModalType) {
       state.modalType = type;
     },
-    showSigninError(state) {
+    [VuexMutation.SHOW_SIGNIN_ERROR](state: Model.State) {
       state.hasSigninError = true;
     },
-    hideSigninError(state) {
+    [VuexMutation.HIDE_SIGNIN_ERROR](state: Model.State) {
       state.hasSigninError = false;
     },
-    showSignupError(state) {
+    [VuexMutation.SHOW_SIGNUP_ERROR](state: Model.State) {
       state.hasSignupError = true;
     },
-    hideSignupError(state) {
+    [VuexMutation.HIDE_SIGNUP_ERROR](state: Model.State) {
       state.hasSignupError = false;
     },
-    setUser(state, user) {
+    [VuexMutation.SET_USER](state: Model.State, user: Model.User) {
       state.user = user;
     },
-    unsetUser(state) {
+    [VuexMutation.UNSET_USER](state: Model.State) {
       state.user = null;
     },
     [VuexMutation.CHANGE_EDITOR_CONTENT](state: Model.State, content: string) {
@@ -63,12 +65,12 @@ export default new Vuex.Store({
   },
   actions: {
     [VuexAction.OPEN_SIGNUP_MODAL]({ commit }) {
-      commit('setModalType', 'signup');
-      commit('openModal');
+      commit(VuexMutation.SET_MODAL_TYPE, 'signup');
+      commit(VuexMutation.OPEN_MODAL);
     },
     [VuexAction.OPEN_SIGNIN_MODAL]({ commit }) {
-      commit('setModalType', 'signin');
-      commit('openModal');
+      commit(VuexMutation.SET_MODAL_TYPE, 'signin');
+      commit(VuexMutation.OPEN_MODAL);
     },
     async [VuexAction.SIGN_UP]({ commit }, data: Model.SigninInfo) {
       const params = new URLSearchParams();
@@ -82,7 +84,7 @@ export default new Vuex.Store({
           await this.dispatch(VuexAction.SIGN_IN, data);
         }
       } catch (error) {
-        commit('showSignupError');
+        commit(VuexMutation.SHOW_SIGNUP_ERROR);
         throw error;
       }
     },
@@ -95,11 +97,11 @@ export default new Vuex.Store({
         // const response = await axios.post('/api/signin', params);
         const response = await axios.post('http://localhost/api/signin', params); // development only
         if (response.status === 200) {
-          commit('setUser', response.data);
-          commit('closeModal');
+          commit(VuexMutation.SET_USER, response.data);
+          commit(VuexMutation.CLOSE_MODAL);
         }
       } catch (error) {
-        commit('showSigninError');
+        commit(VuexMutation.SHOW_SIGNIN_ERROR);
         throw error;
       }
     },
@@ -109,7 +111,7 @@ export default new Vuex.Store({
         // const response = await axios.post('/api/signout', params);
         const response = await axios.post('http://localhost/api/signout', params); // development only
         if (response.status === 200) {
-          commit('unsetUser');
+          commit(VuexMutation.UNSET_USER);
         }
       } catch (error) {
         // TODO: show logout-error message
