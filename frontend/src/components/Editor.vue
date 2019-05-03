@@ -2,6 +2,7 @@
   <div :id="editorId" class="editor"></div>
 </template>
 
+
 <script lang="ts">
   import Vue from 'vue';
   import { mapMutations } from 'vuex';
@@ -37,7 +38,7 @@
       this.editor.setKeyboardHandler('ace/keyboard/vim');
 
       this.editor.getSession().on('change', () => {
-        this.changeEditorContetn(this.editor.getValue());
+        this.changeEditorContent(this.editor.getValue());
       });
 
       const currentCursorSlide = (cursorLine: number): Model.SlideNumber => {
@@ -79,5 +80,3 @@
     height: 100%;
   }
 </style>
-
-

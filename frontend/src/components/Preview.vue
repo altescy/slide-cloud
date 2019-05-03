@@ -44,7 +44,7 @@ export default Vue.extend({
       () => window.Reveal.slide(self.slide_number.h, self.slide_number.v),
     );
     self.$store.watch(
-      () => self.view_mode.mode,
+      () => self.view_mode,
       () => window.Reveal.sync(),
     );
 

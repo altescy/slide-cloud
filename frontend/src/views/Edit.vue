@@ -3,7 +3,7 @@
     <div class="mdl-cell">
       <Editor editor-id="main-editor" />
     </div>
-    <div v-bind:class="[view_mode.mode==='edit'? 'mdl-cell' : 'fullsize', 'mdl-cell']" v-on:keyup.space="TOGGLE_VIEW_MODE()">
+    <div v-bind:class="[view_mode==='edit'? 'mdl-cell' : 'fullsize', 'mdl-cell']" v-on:keyup.space="toggleVewMode()">
       <Preview />
     </div>
   </div>

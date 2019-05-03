@@ -1,6 +1,5 @@
-import * as VuexState from './vuex/state_types';
-
 export type ModalType = 'signup' | 'signin';
+export type ViewMode = 'edit' | 'show';
 
 export interface User {
     id: number;
@@ -10,10 +9,6 @@ export interface User {
 export interface SigninInfo {
     username: string;
     password: string;
-}
-
-export interface ViewMode {
-    mode: 'edit' | 'show';
 }
 
 export interface SlideNumber {

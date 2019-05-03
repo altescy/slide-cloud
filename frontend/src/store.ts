@@ -17,7 +17,7 @@ const initialState: Model.State = {
   modalType: 'signup',
   editor_content: '# Hello, world.',
   slide_number: { h: 0, v: 0 },
-  view_mode: { mode: 'edit'},
+  view_mode: 'edit',
 };
 
 export default new Vuex.Store({
@@ -60,7 +60,7 @@ export default new Vuex.Store({
       state.view_mode = mode;
     },
     [VuexMutation.TOGGLE_VIEW_MODE](state: Model.State) {
-      state.view_mode.mode = state.view_mode.mode === 'edit' ? 'show' : 'edit';
+      state.view_mode = state.view_mode === 'edit' ? 'show' : 'edit';
     },
   },
   actions: {
