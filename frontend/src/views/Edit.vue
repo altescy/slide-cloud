@@ -31,7 +31,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { mapActions, mapGetters } from 'vuex';
+import { mapMutations, mapGetters } from 'vuex';
 import { TOGGLE_VIEW_MODE } from '@/vuex/mutation_types';
 import Header from '@/components/Header.vue';
 import Drawer from '@/components/Drawer.vue';
@@ -44,7 +44,7 @@ export default Vue.extend({
     ...mapGetters(['view_mode']),
   },
   methods: {
-    ...mapActions([TOGGLE_VIEW_MODE]),
+    ...mapMutations([TOGGLE_VIEW_MODE]),
   },
   components: {
     Header,

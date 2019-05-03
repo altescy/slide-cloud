@@ -5,20 +5,27 @@
     <div class="main-editor-container mdl-layout__content">
       <router-view />
     </div>
+    <Modal v-if="isModalOpen"/>
   </div>
 </template>
 
 
 <script lang="ts">
 import Vue from 'vue';
+import { mapState } from 'vuex';
 import Header from '@/components/Header.vue';
 import Drawer from '@/components/Drawer.vue';
+import Modal from '@/components/Modal.vue';
 
 export default Vue.extend({
   name: 'App',
   components: {
     Header,
     Drawer,
+    Modal,
+  },
+  computed: {
+    ...mapState(['isModalOpen']),
   },
 });
 </script>

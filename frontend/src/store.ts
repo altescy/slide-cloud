@@ -1,7 +1,9 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
+import axios from 'axios';
 import * as Model from '@/model';
-import { CHANGE_EDITOR_CONTENT, CHANGE_SLIDE_NUMBER, CHANGE_VIEW_MODE, TOGGLE_VIEW_MODE } from '@/vuex/mutation_types';
+import * as VuexMutation from '@/vuex/mutation_types';
+import * as VuexAction from '@/vuex/action_types';
 
 
 Vue.use(Vuex);
@@ -9,36 +11,110 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
+    user: null,
+    hasSigninError: false,
+    hasSignupError: false,
+    isModalOpen: false,
+    modalType: 'signup',
     editor_content: '# Hello, world.',
     slide_number: { h: 0, v: 0 },
     view_mode: { mode: 'edit'},
   },
   mutations: {
-    [CHANGE_EDITOR_CONTENT](state: Model.State, content: string) {
+    openModal(state) {
+      state.isModalOpen = true;
+    },
+    closeModal(state) {
+      state.isModalOpen = false;
+    },
+    setModalType(state, type) {
+      state.modalType = type;
+    },
+    showSigninError(state) {
+      state.hasSigninError = true;
+    },
+    hideSigninError(state) {
+      state.hasSigninError = false;
+    },
+    showSignupError(state) {
+      state.hasSignupError = true;
+    },
+    hideSignupError(state) {
+      state.hasSignupError = false;
+    },
+    setUser(state, user) {
+      state.user = user;
+    },
+    unsetUser(state) {
+      state.user = null;
+    },
+    [VuexMutation.CHANGE_EDITOR_CONTENT](state: Model.State, content: string) {
       state.editor_content = content;
     },
-    [CHANGE_SLIDE_NUMBER](state: Model.State, snum: Model.SlideNumber) {
+    [VuexMutation.CHANGE_SLIDE_NUMBER](state: Model.State, snum: Model.SlideNumber) {
       state.slide_number = snum;
     },
-    [CHANGE_VIEW_MODE](state: Model.State, mode: Model.ViewMode) {
+    [VuexMutation.CHANGE_VIEW_MODE](state: Model.State, mode: Model.ViewMode) {
       state.view_mode = mode;
     },
-    [TOGGLE_VIEW_MODE](state: Model.State) {
+    [VuexMutation.TOGGLE_VIEW_MODE](state: Model.State) {
       state.view_mode.mode = state.view_mode.mode === 'edit' ? 'show' : 'edit';
     },
   },
   actions: {
-    [CHANGE_EDITOR_CONTENT]({ commit }, content: string) {
-      commit(CHANGE_EDITOR_CONTENT, content);
+    [VuexAction.OPEN_SIGNUP_MODAL]({ commit }) {
+      commit('setModalType', 'signup');
+      commit('openModal');
     },
-    [CHANGE_SLIDE_NUMBER]({ commit }, snum: Model.SlideNumber) {
-      commit(CHANGE_SLIDE_NUMBER, snum);
+    [VuexAction.OPEN_SIGNIN_MODAL]({ commit }) {
+      commit('setModalType', 'signin');
+      commit('openModal');
     },
-    [CHANGE_VIEW_MODE]({ commit }, mode: Model.ViewMode) {
-      commit(CHANGE_VIEW_MODE, mode);
+    async [VuexAction.SIGN_UP]({ commit }, data: Model.SigninInfo) {
+      const params = new URLSearchParams();
+      params.append('name', data.username);
+      params.append('password', data.password);
+
+      try {
+        // const response = await axios.post('/api/signup', params);
+        const response = await axios.post('http://localhost/api/signup', params); // development only
+        if (response.status === 200) {
+          await this.dispatch(VuexAction.SIGN_IN, data);
+        }
+      } catch (error) {
+        commit('showSignupError');
+        throw error;
+      }
     },
-    [TOGGLE_VIEW_MODE]({ commit }) {
-      commit(TOGGLE_VIEW_MODE);
+    async [VuexAction.SIGN_IN]({ commit }, data: Model.SigninInfo) {
+      const params = new URLSearchParams();
+      params.append('name', data.username);
+      params.append('password', data.password);
+
+      try {
+        // const response = await axios.post('/api/signin', params);
+        const response = await axios.post('http://localhost/api/signin', params); // development only
+        if (response.status === 200) {
+          commit('setUser', response.data);
+          commit('closeModal');
+        }
+      } catch (error) {
+        commit('showSigninError');
+        throw error;
+      }
+    },
+    async [VuexAction.SIGN_OUT]({ commit }) {
+      const params = new URLSearchParams();
+      try {
+        // const response = await axios.post('/api/signout', params);
+        const response = await axios.post('http://localhost/api/signout', params); // development only
+        if (response.status === 200) {
+          commit('unsetUser');
+        }
+      } catch (error) {
+        // TODO: show logout-error message
+        throw error;
+      }
     },
   },
   getters: {

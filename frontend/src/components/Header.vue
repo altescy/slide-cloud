@@ -6,19 +6,47 @@
     <div class="mdl-layout__header-row">
       <span class="mdl-layout-title">SlideCloud</span>
       <div class="mdl-layout-spacer"></div>
-      <button class="mdl-button mdl-js-button mdl-button--icon mdl-js-ripple-effect" v-on:click="TOGGLE_VIEW_MODE()">
+      <button class="mdl-button mdl-js-button mdl-button--icon mdl-js-ripple-effect" v-on:click="toggleVuewMode()">
         <i class="material-icons">{{ view_mode.mode=='show'? 'fullscreen_exit':'fullscreen' }}</i>
       </button>
       <button class="mdl-button mdl-js-button mdl-button--icon mdl-js-ripple-effect" id="more-button">
         <i class="material-icons">more_vert</i>
       </button>
-      <ul class="mdl-menu mdl-js-menu mdl-menu--bottom-right mdl-js-ripple-effect" for="more-button">
-        <li class="mdl-menu__item">Sign In</li>
-        <li disabled class="mdl-menu__item">Sign Out</li>
+      <ul class="mdl-menu mdl-js-menu mdl-menu--bottom-right mdl-js-ripple-effect" for="more-button" v-if="user">
+        <li class="mdl-menu__item" >{{ user.name }}</li>
+        <li class="mdl-menu__item" v-on:click="signout()">Sign Out</li>
+      </ul>
+      <ul class="mdl-menu mdl-js-menu mdl-menu--bottom-right mdl-js-ripple-effect" for="more-button" v-else>
+        <li class="mdl-menu__item" v-on:click="openSignupModal()" >Sign Up</li>
+        <li class="mdl-menu__item" v-on:click="openSigninModal()" >Sign In</li>
       </ul>
     </div>
   </header>
 </template>
+
+
+<script lang="ts">
+import Vue from 'vue';
+import { mapState, mapActions, mapMutations } from 'vuex';
+import * as VueAction from '@/vuex/action_types';
+import * as VuexMutation from '@/vuex/mutation_types';
+
+export default Vue.extend({
+  name: 'Header',
+  computed: {
+    ...mapState(['user', 'view_mode']),
+  },
+  methods: {
+    ...mapMutations({toggleVuewMode: VuexMutation.TOGGLE_VIEW_MODE}),
+    ...mapActions({
+      openSigninModal: VueAction.OPEN_SIGNIN_MODAL,
+      openSignupModal: VueAction.OPEN_SIGNUP_MODAL,
+      signout: VueAction.SIGN_OUT,
+    }),
+  },
+});
+</script>
+
 
 <style scoped>
 .mdl-layout__header {
@@ -39,19 +67,3 @@ i {
   opacity: 0.7;
 }
 </style>
-
-<script lang="ts">
-import Vue from 'vue';
-import { mapGetters, mapActions } from 'vuex';
-import { TOGGLE_VIEW_MODE } from '@/vuex/mutation_types';
-
-export default Vue.extend({
-  name: 'Header',
-  computed: {
-    ...mapGetters(['view_mode']),
-  },
-  methods: {
-    ...mapActions([TOGGLE_VIEW_MODE]),
-  },
-});
-</script>

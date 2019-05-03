@@ -4,7 +4,8 @@
 
 <script lang="ts">
   import Vue from 'vue';
-  import { CHANGE_EDITOR_CONTENT, CHANGE_SLIDE_NUMBER } from '@/vuex/mutation_types';
+  import { mapMutations } from 'vuex';
+  import * as VuexMutation from '@/vuex/mutation_types';
   import * as Model from '@/model';
   import * as ace from 'brace';
   import 'brace/mode/markdown';
@@ -22,6 +23,13 @@
         yamlSlideIncrement: 0,
       };
     },
+    methods: {
+      ...mapMutations({
+        changeEditorContent: VuexMutation.CHANGE_EDITOR_CONTENT,
+        changeSlideNumber: VuexMutation.CHANGE_SLIDE_NUMBER,
+      }),
+
+    },
     mounted() {
       this.editor = ace.edit(this.editorId);
       this.editor.getSession().setMode('ace/mode/markdown');
@@ -29,17 +37,10 @@
       this.editor.setKeyboardHandler('ace/keyboard/vim');
 
       this.editor.getSession().on('change', () => {
-        this.$store.dispatch(CHANGE_EDITOR_CONTENT, this.editor.getValue());
+        this.changeEditorContetn(this.editor.getValue());
       });
 
-      this.editor.getSession().selection.on('changeCursor', (e: Event) => {
-        const cursorRow = this.editor.getCursorPosition().row;
-        const currentSlide = this.currentCursorSlide(cursorRow);
-        this.$store.dispatch(CHANGE_SLIDE_NUMBER, currentSlide);
-      });
-    },
-    methods: {
-      currentCursorSlide(cursorLine: number): Model.SlideNumber {
+      const currentCursorSlide = (cursorLine: number): Model.SlideNumber => {
         const lines = this.editor.getValue().split('\n');
         let line = '';
         let slide = 0;
@@ -57,7 +58,13 @@
           h : slide + this.yamlSlideIncrement,
           v : subSlide,
         };
-      },
+      };
+
+      this.editor.getSession().selection.on('changeCursor', (e: Event) => {
+        const cursorRow = this.editor.getCursorPosition().row;
+        const currentSlide = currentCursorSlide(cursorRow);
+        this.changeSlideNumber(currentSlide);
+      });
     },
   });
 
