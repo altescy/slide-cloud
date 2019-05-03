@@ -5,7 +5,7 @@
 
 <script lang="ts">
   import Vue from 'vue';
-  import { mapMutations } from 'vuex';
+  import { mapMutations, mapState } from 'vuex';
   import * as VuexMutation from '@/vuex/mutation_types';
   import * as Model from '@/model';
   import * as ace from 'brace';
@@ -21,8 +21,10 @@
     data() {
       return {
         editor: ace.edit(document.createElement('div')),
-        yamlSlideIncrement: 0,
       };
+    },
+    computed: {
+      ...mapState(['editor_content']),
     },
     methods: {
       ...mapMutations({
@@ -56,7 +58,7 @@
           line = lines[i];
         }
         return {
-          h : slide + this.yamlSlideIncrement,
+          h : slide,
           v : subSlide,
         };
       };
@@ -66,6 +68,14 @@
         const currentSlide = currentCursorSlide(cursorRow);
         this.changeSlideNumber(currentSlide);
       });
+    },
+    watch: {
+      editor_content() {
+        const content = this.editor.getValue();
+        if (content !== this.editor_content) {
+          this.editor.setValue(this.editor_content);
+        }
+      },
     },
   });
 

@@ -18,6 +18,7 @@ const initialState: Model.State = {
   editor_content: '# Hello, world.',
   slide_number: { h: 0, v: 0 },
   view_mode: 'edit',
+  slides: dummy_slides(),
 };
 
 export default new Vuex.Store({
@@ -49,6 +50,12 @@ export default new Vuex.Store({
     },
     [VuexMutation.UNSET_USER](state: Model.State) {
       state.user = null;
+    },
+    [VuexMutation.SET_SLIDES](state: Model.State, slides) {
+      state.slides = slides;
+    },
+    [VuexMutation.UNSET_SLIDES](state: Model.State) {
+      state.slides = [];
     },
     [VuexMutation.CHANGE_EDITOR_CONTENT](state: Model.State, content: string) {
       state.editor_content = content;
@@ -99,6 +106,7 @@ export default new Vuex.Store({
         if (response.status === 200) {
           commit(VuexMutation.SET_USER, response.data);
           commit(VuexMutation.CLOSE_MODAL);
+          await this.dispatch(VuexAction.FETCH_SLIDES);
         }
       } catch (error) {
         commit(VuexMutation.SHOW_SIGNIN_ERROR);
@@ -112,11 +120,38 @@ export default new Vuex.Store({
         const response = await axios.post('http://localhost/api/signout', params); // development only
         if (response.status === 200) {
           commit(VuexMutation.UNSET_USER);
+          commit(VuexMutation.UNSET_SLIDES);
         }
       } catch (error) {
         // TODO: show logout-error message
         throw error;
       }
+    },
+    async [VuexAction.FETCH_SLIDES]({ commit }) {
+      try {
+        // const response = await axios.get('/api/slides?without_content');
+        const response = await axios.get('/api/slides');
+        if (response.status === 200) {
+          commit(VuexMutation.SET_SLIDES, response.data);
+        }
+      } catch (error) {
+        // TODO: show fetch error message
+        throw error;
+      }
+    },
+    async [VuexAction.LOAD_SLIDE]({ commit }, slide: Model.Slide) {
+      if (!slide.content) {
+        try {
+          const response = await axios.get('/api/slide/' + slide.access_token);
+          if (response.status === 200) {
+            slide = response.data;
+          }
+        } catch (error) {
+          // TODO: show load error message
+          throw error;
+        }
+      }
+      commit(VuexMutation.CHANGE_EDITOR_CONTENT, slide.content);
     },
   },
   getters: {
@@ -125,3 +160,27 @@ export default new Vuex.Store({
     view_mode: (state: Model.State) => state.view_mode,
   },
 });
+
+function dummy_slides() {
+  const slide1: Model.Slide = {
+    id: 10,
+    user_id: 1,
+    access_token: 'HOGEhoge',
+    public: false,
+    name: 'This is a dummy slide name.',
+    content: '# Hello, world!',
+    created_at: '2019-05-02T18:43:59+09:00',
+    updated_at: '2019-05-02T18:43:59+09:00',
+  };
+  const slide2: Model.Slide = {
+    id: 10,
+    user_id: 1,
+    access_token: 'HOGEhoge',
+    public: true,
+    name: 'This is public slide.',
+    content: '# Hello, public world!',
+    created_at: '2019-05-02T18:43:59+09:00',
+    updated_at: '2019-05-02T18:43:59+09:00',
+  };
+  return [slide1, slide2];
+}
