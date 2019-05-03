@@ -1,13 +1,13 @@
 <template>
-  <header v-bind:class="[view_mode.mode==='show'? 'hovershow':'', 'mdl-layout__header']">
+  <header v-bind:class="[view_mode==='show'? 'hovershow':'', 'mdl-layout__header']">
     <div class="mdl-layout__drawer-button">
       <i class="material-icons">dehaze</i>
     </div>
     <div class="mdl-layout__header-row">
       <span class="mdl-layout-title">SlideCloud</span>
       <div class="mdl-layout-spacer"></div>
-      <button class="mdl-button mdl-js-button mdl-button--icon mdl-js-ripple-effect" v-on:click="toggleVuewMode()">
-        <i class="material-icons">{{ view_mode.mode=='show'? 'fullscreen_exit':'fullscreen' }}</i>
+      <button class="mdl-button mdl-js-button mdl-button--icon mdl-js-ripple-effect" v-on:click="toggleViewMode()">
+        <i class="material-icons">{{ view_mode=='show'? 'fullscreen_exit':'fullscreen' }}</i>
       </button>
       <button class="mdl-button mdl-js-button mdl-button--icon mdl-js-ripple-effect" id="more-button">
         <i class="material-icons">more_vert</i>
@@ -37,12 +37,21 @@ export default Vue.extend({
     ...mapState(['user', 'view_mode']),
   },
   methods: {
-    ...mapMutations({toggleVuewMode: VuexMutation.TOGGLE_VIEW_MODE}),
+    ...mapMutations({toggleViewMode_: VuexMutation.TOGGLE_VIEW_MODE}),
     ...mapActions({
       openSigninModal: VueAction.OPEN_SIGNIN_MODAL,
       openSignupModal: VueAction.OPEN_SIGNUP_MODAL,
       signout: VueAction.SIGN_OUT,
     }),
+    toggleViewMode() {
+      const doc = window.document.documentElement;
+      if (this.view_mode === 'edit') {
+        doc.requestFullscreen.apply(doc);
+      } else {
+        window.document.exitFullscreen();
+      }
+      this.toggleViewMode_();
+    },
   },
 });
 </script>
