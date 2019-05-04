@@ -1,4 +1,4 @@
-export type ModalType = 'signup' | 'signin' | 'addslide';
+export type ModalType = 'signup' | 'signin' | 'createslide';
 export type ViewMode = 'edit' | 'show';
 
 export interface User {
@@ -31,6 +31,7 @@ export interface State {
     user: User | null;
     hasSigninError: boolean;
     hasSignupError: boolean;
+    createSlideError: string;
     isModalOpen: boolean;
     modalType: ModalType;
     view_mode: ViewMode;

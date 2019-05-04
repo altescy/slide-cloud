@@ -13,6 +13,7 @@ const initialState: Model.State = {
   user: null,
   hasSigninError: false,
   hasSignupError: false,
+  createSlideError: '',
   isModalOpen: false,
   modalType: 'signup',
   editor_content: '# Hello, world.',
@@ -45,6 +46,12 @@ export default new Vuex.Store({
     [VuexMutation.HIDE_SIGNUP_ERROR](state: Model.State) {
       state.hasSignupError = false;
     },
+    [VuexMutation.SET_CREATESLIDE_ERROR](state: Model.State, message: string) {
+      state.createSlideError = message;
+    },
+    [VuexMutation.UNSET_CREATESLIDE_ERROR](state: Model.State) {
+      state.createSlideError = "";
+    },
     [VuexMutation.SET_USER](state: Model.State, user: Model.User) {
       state.user = user;
     },
@@ -56,6 +63,9 @@ export default new Vuex.Store({
     },
     [VuexMutation.UNSET_SLIDES](state: Model.State) {
       state.slides = [];
+    },
+    [VuexMutation.APPEND_SLIDE](state: Model.State, slide: Model.Slide) {
+      state.slides.push(slide);
     },
     [VuexMutation.CHANGE_EDITOR_CONTENT](state: Model.State, content: string) {
       state.editor_content = content;
@@ -77,6 +87,10 @@ export default new Vuex.Store({
     },
     [VuexAction.OPEN_SIGNIN_MODAL]({ commit }) {
       commit(VuexMutation.SET_MODAL_TYPE, 'signin');
+      commit(VuexMutation.OPEN_MODAL);
+    },
+    [VuexAction.OPEN_ADDSLIDE_MODAL]({ commit }) {
+      commit(VuexMutation.SET_MODAL_TYPE, 'createslide');
       commit(VuexMutation.OPEN_MODAL);
     },
     async [VuexAction.SIGN_UP]({ commit }, data: Model.SigninInfo) {
@@ -153,6 +167,26 @@ export default new Vuex.Store({
       }
       commit(VuexMutation.CHANGE_EDITOR_CONTENT, slide.content);
     },
+    async [VuexAction.CREATE_SLIDE]({ commit }, { title, content }) {
+      if (!content) {
+        content = "# " + title;
+      }
+      const params = new URLSearchParams();
+      params.append("name", title);
+      params.append("content", content);
+      try {
+        const response = await axios.post('/api/slide', params);
+        if (response.status === 200) {
+          commit(VuexMutation.APPEND_SLIDE, response.data);
+          commit(VuexMutation.CHANGE_EDITOR_CONTENT, response.data.content);
+          commit(VuexMutation.CLOSE_MODAL);
+        }
+      } catch (error) {
+        // TODO: show error message
+        commit(VuexMutation.SET_CREATESLIDE_ERROR, error.response.data.err);
+        throw error;
+      }
+    }
   },
   getters: {
     editor_content: (state: Model.State) => state.editor_content,

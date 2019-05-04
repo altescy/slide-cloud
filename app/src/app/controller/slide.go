@@ -54,10 +54,7 @@ func (h *Handler) AddSlide(w http.ResponseWriter, r *http.Request, _ httprouter.
 	case err != nil:
 		h.handleError(w, err, 500)
 	default:
-		h.handleSuccess(w, map[string]interface{}{
-			"id":           slide.ID,
-			"access_token": slide.AccessToken,
-		})
+		h.handleSuccess(w, slide)
 	}
 }
 

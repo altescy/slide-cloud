@@ -1,11 +1,11 @@
 <template>
   <div>
-    <p class="error-message" v-if='hasSigninError'>Failed to create slide</p>
+    <p class="error-message" v-if='createSlideError'>{{ createSlideError }}</p>
     <div class="row">
       title
       <input type="text" class="input" v-model='title' autofocus='true'>
     </div>
-    <button class="button" @click.prevent='postSignin()'>create</button>
+    <button class="button" @click.prevent='postCreateSlide()'>create</button>
   </div>
 </template>
 
@@ -18,36 +18,32 @@ import * as VuexMutation from '@/vuex/mutation_types';
 import * as Model from '@/model';
 
 export default Vue.extend({
-  name: 'NewSlideForm',
+  name: 'CreateSlideForm',
   data() {
     return {
       title: '',
     };
   },
   computed: {
-    ...mapState(['hasSigninError']),
+    ...mapState(['createSlideError']),
   },
   methods: {
-    ...mapActions({signin: VuexAction.SIGN_IN}),
+    ...mapActions({createSlide: VuexAction.CREATE_SLIDE}),
     ...mapMutations({
       closeModal: VuexMutation.CLOSE_MODAL,
-      showSigninError: VuexMutation.SHOW_SIGNIN_ERROR,
-      hideSigninError: VuexMutation.HIDE_SIGNIN_ERROR,
+      unsetCreateSlideError: VuexMutation.UNSET_CREATESLIDE_ERROR,
     }),
-    async postSignin() {
-      const data: Model.SigninInfo = {
-        username: this.username,
-        password: this.password,
+    async postCreateSlide() {
+      const data = {
+        title: this.title,
+        content: '',
       };
-      await this.signin(data);
+      await this.createSlide(data);
     },
   },
   watch: {
-    username() {
-      this.hideSigninError();
-    },
-    password() {
-      this.hideSigninError();
+    title() {
+      this.unsetCreateSlideError();
     },
   },
 });

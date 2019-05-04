@@ -15,7 +15,7 @@
     </ul>
     <div class="mdl-layout-spacer"></div>
     <div class="drawer-footer">
-      <div class="operation" v-on:click="hideDrwer()">
+      <div class="operation" v-on:click="openAddslideModal()">
         <i class="material-icons">note_add</i>
         <span>Add new slide</span>
       </div>
@@ -35,7 +35,10 @@ export default Vue.extend({
     ...mapState(['user', 'slides']),
   },
   methods: {
-    ...mapActions({loadSlide_: VuexAction.LOAD_SLIDE}),
+    ...mapActions({
+      loadSlide_: VuexAction.LOAD_SLIDE,
+      openAddslideModal_: VuexAction.OPEN_ADDSLIDE_MODAL,
+    }),
     hideDrwer() {
       // depend on MDL
       const drawer = document.getElementById('drawer');
@@ -49,6 +52,10 @@ export default Vue.extend({
     },
     loadSlide(slide: Model.Slide) {
       this.loadSlide_(slide);
+      this.hideDrwer();
+    },
+    openAddslideModal() {
+      this.openAddslideModal_();
       this.hideDrwer();
     },
   },
