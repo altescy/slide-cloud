@@ -38,4 +38,6 @@ export interface State {
     editor_content: string;
     slide_number: SlideNumber;
     slides: Slide[];
+    currentSlide: Slide | null;
+    createContent: string | null;
 }

@@ -34,11 +34,7 @@ export default Vue.extend({
       unsetCreateSlideError: VuexMutation.UNSET_CREATESLIDE_ERROR,
     }),
     async postCreateSlide() {
-      const data = {
-        title: this.title,
-        content: '',
-      };
-      await this.createSlide(data);
+      await this.createSlide(this.title);
     },
   },
   watch: {

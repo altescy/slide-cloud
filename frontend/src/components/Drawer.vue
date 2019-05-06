@@ -25,8 +25,9 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { mapState, mapActions } from 'vuex';
+import { mapState, mapActions, mapMutations } from 'vuex';
 import * as VuexAction from '@/vuex/action_types';
+import * as VuexMutation from '@/vuex/mutation_types';
 import * as Model from '@/model';
 
 export default Vue.extend({
@@ -39,6 +40,7 @@ export default Vue.extend({
       loadSlide_: VuexAction.LOAD_SLIDE,
       openAddslideModal_: VuexAction.OPEN_ADDSLIDE_MODAL,
     }),
+    ...mapMutations({unsetCreateContent: VuexMutation.UNSET_CREATE_CONTENT}),
     hideDrwer() {
       // depend on MDL
       const drawer = document.getElementById('drawer');
@@ -55,8 +57,8 @@ export default Vue.extend({
       this.hideDrwer();
     },
     openAddslideModal() {
+      this.unsetCreateContent();
       this.openAddslideModal_();
-      this.hideDrwer();
     },
   },
 });

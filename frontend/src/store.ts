@@ -20,6 +20,8 @@ const initialState: Model.State = {
   slide_number: { h: 0, v: 0 },
   view_mode: 'edit',
   slides: dummy_slides(),
+  currentSlide: null,
+  createContent: null,
 };
 
 export default new Vuex.Store({
@@ -66,6 +68,36 @@ export default new Vuex.Store({
     },
     [VuexMutation.APPEND_SLIDE](state: Model.State, slide: Model.Slide) {
       state.slides.push(slide);
+      state.slides.sort((s: Model.Slide, t: Model.Slide) => {
+        if (s.updated_at < t.updated_at) {
+          return 1;
+        } else if (s.updated_at > t.updated_at) {
+          return -1;
+        }
+        return 0;
+      });
+    },
+    [VuexMutation.UPDATE_SLIDE](state: Model.State, slide: Model.Slide) {
+      let s = state.slides.find((t: Model.Slide) => {
+        return t.access_token === slide.access_token;
+      });
+      if (s) {
+        s = slide;
+      } else {
+        throw new Error('slide not found');
+      }
+    },
+    [VuexMutation.SET_CURRENT_SLIDE](state: Model.State, slide: Model.Slide) {
+      state.currentSlide = slide;
+    },
+    [VuexMutation.UNSET_CURRENT_SLIDE](state: Model.State) {
+      state.currentSlide = null;
+    },
+    [VuexMutation.SET_CREATE_CONTENT](state: Model.State, content: string) {
+      state.createContent = content;
+    },
+    [VuexMutation.UNSET_CREATE_CONTENT](state: Model.State) {
+      state.createContent = null;
     },
     [VuexMutation.CHANGE_EDITOR_CONTENT](state: Model.State, content: string) {
       state.editor_content = content;
@@ -135,6 +167,8 @@ export default new Vuex.Store({
         if (response.status === 200) {
           commit(VuexMutation.UNSET_USER);
           commit(VuexMutation.UNSET_SLIDES);
+          commit(VuexMutation.UNSET_CURRENT_SLIDE);
+          commit(VuexMutation.UNSET_CREATE_CONTENT);
         }
       } catch (error) {
         // TODO: show logout-error message
@@ -154,23 +188,19 @@ export default new Vuex.Store({
       }
     },
     async [VuexAction.LOAD_SLIDE]({ commit }, slide: Model.Slide) {
-      if (!slide.content) {
-        try {
-          const response = await axios.get('/api/slide/' + slide.access_token);
-          if (response.status === 200) {
-            slide = response.data;
-          }
-        } catch (error) {
-          // TODO: show load error message
-          throw error;
+      try {
+        const response = await axios.get('/api/slide/' + slide.access_token);
+        if (response.status === 200) {
+          commit(VuexMutation.SET_CURRENT_SLIDE, response.data);
+          commit(VuexMutation.CHANGE_EDITOR_CONTENT, response.data.content);
         }
+      } catch (error) {
+        // TODO: show load error message
+        throw error;
       }
-      commit(VuexMutation.CHANGE_EDITOR_CONTENT, slide.content);
     },
-    async [VuexAction.CREATE_SLIDE]({ commit }, { title, content }) {
-      if (!content) {
-        content = "# " + title;
-      }
+    async [VuexAction.CREATE_SLIDE]({ commit }, title: string) {
+      const content = this.state.createContent || ('# ' + title);
       const params = new URLSearchParams();
       params.append("name", title);
       params.append("content", content);
@@ -178,7 +208,7 @@ export default new Vuex.Store({
         const response = await axios.post('/api/slide', params);
         if (response.status === 200) {
           commit(VuexMutation.APPEND_SLIDE, response.data);
-          commit(VuexMutation.CHANGE_EDITOR_CONTENT, response.data.content);
+          commit(VuexMutation.UNSET_CREATE_CONTENT);
           commit(VuexMutation.CLOSE_MODAL);
         }
       } catch (error) {
@@ -186,7 +216,21 @@ export default new Vuex.Store({
         commit(VuexMutation.SET_CREATESLIDE_ERROR, error.response.data.err);
         throw error;
       }
-    }
+    },
+    async [VuexAction.SAVE_SLIDE]({ commit }, { token, content }) {
+      const params = new URLSearchParams();
+      params.append('content', content);
+      try {
+        const response = await axios.put('/api/slide/' + token, params);
+        if (response.status === 200) {
+          commit(VuexMutation.UPDATE_SLIDE, response.data);
+          commit(VuexMutation.SET_CURRENT_SLIDE, response.data);
+        }
+      } catch (error) {
+        // TODO: show error message
+        throw error;
+      }
+    },
   },
   getters: {
     editor_content: (state: Model.State) => state.editor_content,

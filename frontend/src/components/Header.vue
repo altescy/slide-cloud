@@ -6,6 +6,9 @@
     <div class="mdl-layout__header-row">
       <span class="mdl-layout-title">SlideCloud</span>
       <div class="mdl-layout-spacer"></div>
+      <button class="mdl-button mdl-js-button mdl-button--icon mdl-js-ripple-effect" v-if="user" v-on:click="saveSlide()">
+        <i class="material-icons">save</i>
+      </button>
       <button class="mdl-button mdl-js-button mdl-button--icon mdl-js-ripple-effect" v-on:click="toggleViewMode()">
         <i class="material-icons">{{ view_mode=='show'? 'fullscreen_exit':'fullscreen' }}</i>
       </button>
@@ -28,20 +31,25 @@
 <script lang="ts">
 import Vue from 'vue';
 import { mapState, mapActions, mapMutations } from 'vuex';
-import * as VueAction from '@/vuex/action_types';
+import * as VuexAction from '@/vuex/action_types';
 import * as VuexMutation from '@/vuex/mutation_types';
 
 export default Vue.extend({
   name: 'Header',
   computed: {
-    ...mapState(['user', 'view_mode']),
+    ...mapState(['user', 'view_mode', 'currentSlide', 'editor_content']),
   },
   methods: {
-    ...mapMutations({toggleViewMode_: VuexMutation.TOGGLE_VIEW_MODE}),
+    ...mapMutations({
+      toggleViewMode_: VuexMutation.TOGGLE_VIEW_MODE,
+      setCreateContent: VuexMutation.SET_CREATE_CONTENT,
+    }),
     ...mapActions({
-      openSigninModal: VueAction.OPEN_SIGNIN_MODAL,
-      openSignupModal: VueAction.OPEN_SIGNUP_MODAL,
-      signout: VueAction.SIGN_OUT,
+      openSigninModal: VuexAction.OPEN_SIGNIN_MODAL,
+      openSignupModal: VuexAction.OPEN_SIGNUP_MODAL,
+      openAddslideModal: VuexAction.OPEN_ADDSLIDE_MODAL,
+      signout: VuexAction.SIGN_OUT,
+      saveSlide_: VuexAction.SAVE_SLIDE,
     }),
     toggleViewMode() {
       const doc = window.document.documentElement;
@@ -51,6 +59,18 @@ export default Vue.extend({
         window.document.exitFullscreen();
       }
       this.toggleViewMode_();
+    },
+    saveSlide() {
+      if (this.currentSlide) {
+        const data = {
+          token: this.currentSlide.access_token,
+          content: this.editor_content,
+        };
+        this.saveSlide_(data);
+      } else {
+        this.setCreateContent(this.editor_content);
+        this.openAddslideModal();
+      }
     },
   },
 });
