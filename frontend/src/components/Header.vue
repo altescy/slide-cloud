@@ -5,7 +5,7 @@
     </div>
     <div class="mdl-layout__header-row">
       <span class="mdl-layout-title">SlideCloud</span>
-      <span class="slide-title" v-if="currentSlide"> {{ currentSlide.name }}</span>
+      <span class="slide-title clickable-item" v-if="currentSlide" v-on:click="openSlideconfigModal()"> {{ currentSlide.name }}</span>
       <div class="mdl-layout-spacer"></div>
       <button class="mdl-button mdl-js-button mdl-button--icon mdl-js-ripple-effect" v-if="user" v-on:click="saveSlide()">
         <i class="material-icons">save</i>
@@ -49,6 +49,7 @@ export default Vue.extend({
       openSigninModal: VuexAction.OPEN_SIGNIN_MODAL,
       openSignupModal: VuexAction.OPEN_SIGNUP_MODAL,
       openAddslideModal: VuexAction.OPEN_ADDSLIDE_MODAL,
+      openSlideconfigModal: VuexAction.OPEN_SLIDECONFIG_MODAL,
       signout: VuexAction.SIGN_OUT,
       saveSlide_: VuexAction.SAVE_SLIDE,
     }),
@@ -102,5 +103,12 @@ i {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.clickable-item {
+  cursor: pointer;
+}
+.clickable-item:hover {
+  background-color: rgba(0, 0, 0, 0.1);
 }
 </style>

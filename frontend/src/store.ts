@@ -19,7 +19,7 @@ const initialState: Model.State = {
   editor_content: '# Hello, world.',
   slide_number: { h: 0, v: 0 },
   view_mode: 'edit',
-  slides: dummy_slides(),
+  slides: [],
   currentSlide: null,
   createContent: null,
 };
@@ -87,6 +87,10 @@ export default new Vuex.Store({
         throw new Error('slide not found');
       }
     },
+    [VuexMutation.REMOVE_SLIDE](state: Model.State, token: string) {
+      const idx = state.slides.findIndex((s: Model.Slide) => s.access_token === token);
+      state.slides.splice(idx, 1);
+    },
     [VuexMutation.SET_CURRENT_SLIDE](state: Model.State, slide: Model.Slide) {
       state.currentSlide = slide;
     },
@@ -125,14 +129,17 @@ export default new Vuex.Store({
       commit(VuexMutation.SET_MODAL_TYPE, 'createslide');
       commit(VuexMutation.OPEN_MODAL);
     },
+    [VuexAction.OPEN_SLIDECONFIG_MODAL]({ commit }) {
+      commit(VuexMutation.SET_MODAL_TYPE, 'slideconfig');
+      commit(VuexMutation.OPEN_MODAL);
+    },
     async [VuexAction.SIGN_UP]({ commit }, data: Model.SigninInfo) {
       const params = new URLSearchParams();
       params.append('name', data.username);
       params.append('password', data.password);
 
       try {
-        // const response = await axios.post('/api/signup', params);
-        const response = await axios.post('http://localhost/api/signup', params); // development only
+        const response = await axios.post('/api/signup', params);
         if (response.status === 200) {
           await this.dispatch(VuexAction.SIGN_IN, data);
         }
@@ -147,8 +154,7 @@ export default new Vuex.Store({
       params.append('password', data.password);
 
       try {
-        // const response = await axios.post('/api/signin', params);
-        const response = await axios.post('http://localhost/api/signin', params); // development only
+        const response = await axios.post('/api/signin', params);
         if (response.status === 200) {
           commit(VuexMutation.SET_USER, response.data);
           commit(VuexMutation.CLOSE_MODAL);
@@ -162,8 +168,7 @@ export default new Vuex.Store({
     async [VuexAction.SIGN_OUT]({ commit }) {
       const params = new URLSearchParams();
       try {
-        // const response = await axios.post('/api/signout', params);
-        const response = await axios.post('http://localhost/api/signout', params); // development only
+        const response = await axios.post('/api/signout', params);
         if (response.status === 200) {
           commit(VuexMutation.UNSET_USER);
           commit(VuexMutation.UNSET_SLIDES);
@@ -177,8 +182,7 @@ export default new Vuex.Store({
     },
     async [VuexAction.FETCH_SLIDES]({ commit }) {
       try {
-        // const response = await axios.get('/api/slides?without_content');
-        const response = await axios.get('/api/slides');
+        const response = await axios.get('/api/slides?without_content');
         if (response.status === 200) {
           commit(VuexMutation.SET_SLIDES, response.data);
         }
@@ -225,6 +229,40 @@ export default new Vuex.Store({
         if (response.status === 200) {
           commit(VuexMutation.UPDATE_SLIDE, response.data);
           commit(VuexMutation.SET_CURRENT_SLIDE, response.data);
+        }
+      } catch (error) {
+        // TODO: show error message
+        throw error;
+      }
+    },
+    async [VuexAction.UPDATE_SLIDE_CONFIG]({ commit }, { token, title, is_public }) {
+      const params = new URLSearchParams();
+      params.append('name', title);
+      params.append('public', is_public);
+      try {
+        const response = await axios.put('/api/slide/' + token, params);
+        if (response.status === 200) {
+          // commit(VuexMutation.UPDATE_SLIDE, response.data);
+          commit(VuexMutation.REMOVE_SLIDE, response.data.access_token);
+          commit(VuexMutation.APPEND_SLIDE, response.data);
+          commit(VuexMutation.SET_CURRENT_SLIDE, response.data);
+          commit(VuexMutation.CLOSE_MODAL);
+        }
+      } catch (error) {
+        // TODO: show error message
+        throw error;
+      }
+    },
+    async [VuexAction.DELETE_SLIDE]({ commit }, token: string) {
+      try {
+        const response = await axios.delete('/api/slide/' + token);
+        if (response.status === 200) {
+          commit(VuexMutation.REMOVE_SLIDE, token);
+          if (this.state.currentSlide && this.state.currentSlide.access_token === token) {
+            commit(VuexMutation.UNSET_CURRENT_SLIDE);
+            commit(VuexMutation.CHANGE_EDITOR_CONTENT, '');
+            commit(VuexMutation.CLOSE_MODAL);
+          }
         }
       } catch (error) {
         // TODO: show error message

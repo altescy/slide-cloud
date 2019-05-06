@@ -4,6 +4,7 @@
       <SignupForm v-if="modalType === 'signup'"/>
       <SigninForm v-else-if="modalType === 'signin'"/>
       <CreateSlideForm v-else-if="modalType === 'createslide'"/>
+      <SlideConfig v-else-if="modalType === 'slideconfig'"/>
     </div>
   </div>
 </template>
@@ -15,12 +16,14 @@ import * as VuexMutation from '@/vuex/mutation_types';
 import SignupForm from '@/components/SignupForm.vue';
 import SigninForm from '@/components/SigninForm.vue';
 import CreateSlideForm from '@/components/CreateSlideForm.vue';
+import SlideConfig from '@/components/SlideConfig.vue';
 export default Vue.extend({
   name: 'Modal',
   components: {
     SignupForm,
     SigninForm,
     CreateSlideForm,
+    SlideConfig,
   },
   computed: {
     ...mapState(['modalType']),

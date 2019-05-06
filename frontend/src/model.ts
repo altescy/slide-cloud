@@ -1,4 +1,4 @@
-export type ModalType = 'signup' | 'signin' | 'createslide';
+export type ModalType = 'signup' | 'signin' | 'createslide' | 'slideconfig';
 export type ViewMode = 'edit' | 'show';
 
 export interface User {
