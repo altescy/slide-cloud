@@ -14,12 +14,6 @@
   import 'brace/theme/github';
   import 'brace/keybinding/vim';
 
-  declare namespace AceAjax {
-    export interface Ace {
-      config: any;
-    }
-  }
-
   export default Vue.extend({
     name: 'Editor',
     props: {
