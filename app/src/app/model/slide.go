@@ -125,7 +125,7 @@ func UpdateSlide(tx *sql.Tx, userID int64, accessToken string, params map[string
 			keys = append(keys, fmt.Sprintf("%s = ?", k))
 			switch {
 			case k == "public":
-				values = append(values, v == "1")
+				values = append(values, v == "1" || v == "true")
 			default:
 				values = append(values, v)
 			}
