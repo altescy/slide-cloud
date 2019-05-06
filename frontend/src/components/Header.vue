@@ -5,6 +5,7 @@
     </div>
     <div class="mdl-layout__header-row">
       <span class="mdl-layout-title">SlideCloud</span>
+      <span class="slide-title" v-if="currentSlide"> {{ currentSlide.name }}</span>
       <div class="mdl-layout-spacer"></div>
       <button class="mdl-button mdl-js-button mdl-button--icon mdl-js-ripple-effect" v-if="user" v-on:click="saveSlide()">
         <i class="material-icons">save</i>
@@ -94,5 +95,12 @@ i {
 }
 .hovershow:hover {
   opacity: 0.7;
+}
+.slide-title {
+  margin-left: 30px;
+  max-width: 300px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 </style>
