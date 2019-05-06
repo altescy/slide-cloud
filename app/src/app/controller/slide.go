@@ -96,6 +96,8 @@ func (h *Handler) UpdateSlide(w http.ResponseWriter, r *http.Request, p httprout
 	switch {
 	case err == model.ErrSlideConflict:
 		h.handleError(w, err, 409)
+	case err == model.ErrSlideNotFound:
+		h.handleError(w, err, 404)
 	case err != nil:
 		h.handleError(w, err, 500)
 	default:
