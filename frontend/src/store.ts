@@ -277,6 +277,17 @@ export default new Vuex.Store({
         throw error;
       }
     },
+    async [VuexAction.FETCH_USER]({ commit }) {
+      try {
+        const response = await axios.get('/api/user');
+        if (response.status === 200) {
+          commit(VuexMutation.SET_USER, response.data);
+        }
+      } catch (error) {
+        if (error.response.status === 401) return;
+        throw error;
+      }
+    }
   },
   getters: {
     editor_content: (state: Model.State) => state.editor_content,

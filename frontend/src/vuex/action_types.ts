@@ -11,3 +11,4 @@ export const CREATE_SLIDE = 'CREATE_SLIDE';
 export const SAVE_SLIDE = 'SAVE_SLIDE';
 export const DELETE_SLIDE = 'DELETE_SLIDE';
 export const UPDATE_SLIDE_CONFIG = 'UPDATE_SLIDE_CONFIG';
+export const FETCH_USER = 'FETCH_USER';

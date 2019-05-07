@@ -12,10 +12,11 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { mapState } from 'vuex';
+import { mapState, mapActions } from 'vuex';
 import Header from '@/components/Header.vue';
 import Drawer from '@/components/Drawer.vue';
 import Modal from '@/components/Modal.vue';
+import * as VuexAction from '@/vuex/action_types';
 
 export default Vue.extend({
   name: 'App',
@@ -25,7 +26,20 @@ export default Vue.extend({
     Modal,
   },
   computed: {
-    ...mapState(['isModalOpen']),
+    ...mapState(['isModalOpen', 'user']),
+  },
+  methods: {
+    ...mapActions({
+      fetchUser: VuexAction.FETCH_USER,
+      fetchSlides: VuexAction.FETCH_SLIDES,
+    }),
+  },
+  mounted() {
+    this.fetchUser().then(() => {
+      if (this.user) {
+        this.fetchSlides();
+      }
+    });
   },
 });
 </script>
