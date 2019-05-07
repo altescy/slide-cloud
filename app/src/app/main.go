@@ -62,6 +62,7 @@ func main() {
 	router.POST("/signup", h.Signup)
 	router.POST("/signin", h.Signin)
 	router.POST("/signout", h.Signout)
+	router.GET("/user", h.GetUser)
 	router.GET("/slides", h.GetSlides)
 	router.GET("/slide/:token", h.GetSlide)
 	router.POST("/slide", h.AddSlide)

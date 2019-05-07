@@ -77,3 +77,12 @@ func (h *Handler) Signout(w http.ResponseWriter, r *http.Request, _ httprouter.P
 	}
 	h.handleSuccess(w, struct{}{})
 }
+
+func (h *Handler) GetUser(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+	user, err := h.userByRequest(r)
+	if err != nil {
+		h.handleError(w, err, 401)
+		return
+	}
+	h.handleSuccess(w, user)
+}
