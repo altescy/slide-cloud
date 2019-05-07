@@ -2,7 +2,7 @@
   <div id="drawer" class="mdl-layout__drawer">
     <span class="mdl-layout-title">SlideCloud</span>
     <ul class="slide-list demo-list-control mdl-list">
-      <li class="mdl-list__item mdl-list__item--two-line" v-for="slide in slides" v-on:click="loadSlide(slide)">
+      <li class="mdl-list__item mdl-list__item--two-line" v-for="slide in slides" v-bind:key="slide.name" v-on:click="loadSlide(slide)">
         <span class="slide-info mdl-list__item-primary-content">
           <span>{{ slide.name }}</span>
           <span class="mdl-list__item-sub-title">{{ slide.updated_at }}</span>
