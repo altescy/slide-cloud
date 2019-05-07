@@ -21,8 +21,8 @@ CREATE TABLE IF NOT EXISTS slide (
     updated_at DATETIME NOT NULL,
     deleted BOOLEAN DEFAULT 0 NOT NULL,
     PRIMARY KEY (id),
-    UNIQUE KEY (access_token),
-    UNIQUE KEY (user_id, name)
+    UNIQUE KEY (access_token)
+    -- UNIQUE KEY (user_id, name)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET utf8mb4;
 
 CREATE TABLE IF NOT EXISTS history (
