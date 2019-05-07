@@ -6,7 +6,7 @@ import (
 
 	"app/model"
 
-	"github.com/gorilla/sessions"
+	// "github.com/gorilla/sessions"
 	"github.com/julienschmidt/httprouter"
 	"github.com/pkg/errors"
 )
@@ -70,7 +70,7 @@ func (h *Handler) Signout(w http.ResponseWriter, r *http.Request, _ httprouter.P
 		return
 	}
 	session.Values["user_id"] = 0
-	session.Options = &sessions.Options{MaxAge: -1}
+	session.Options.MaxAge = -1
 	if err = session.Save(r, w); err != nil {
 		h.handleError(w, err, 500)
 		return
