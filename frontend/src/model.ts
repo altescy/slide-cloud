@@ -32,6 +32,7 @@ export interface State {
     hasSigninError: boolean;
     hasSignupError: boolean;
     createSlideError: string;
+    slideConfigError: string;
     isModalOpen: boolean;
     modalType: ModalType;
     view_mode: ViewMode;

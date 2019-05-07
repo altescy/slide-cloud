@@ -1,9 +1,8 @@
 <template>
   <div>
-    <p>Slide Config</p>
-    <p class="error-message" v-if='hasSigninError'>Failed to login</p>
+    <p class="error-message" v-if='slideConfigError'>{{ slideConfigError }}</p>
     <div class="row">
-      title 
+      title
       <input type="text" class="input" v-model='title' autofocus='true'>
     </div>
     <div class="row">
@@ -42,7 +41,7 @@ export default Vue.extend({
     };
   },
   computed: {
-    ...mapState(['hasSigninError', 'currentSlide']),
+    ...mapState(['slideConfigError', 'currentSlide']),
   },
   mounted() {
     if (this.currentSlide) {
@@ -58,12 +57,11 @@ export default Vue.extend({
     }),
     ...mapMutations({
       closeModal: VuexMutation.CLOSE_MODAL,
-      showSigninError: VuexMutation.SHOW_SIGNIN_ERROR,
-      hideSigninError: VuexMutation.HIDE_SIGNIN_ERROR,
+      unsetSlideConfigError: VuexMutation.UNSET_SLIDECONFIG_ERROR,
     }),
     async update() {
-      if(this.currentSlide) {
-        if(this.remove) {
+      if (this.currentSlide) {
+        if (this.remove) {
           await this.deleteSlide(this.currentSlide.access_token);
         } else {
         const data = {
@@ -78,10 +76,13 @@ export default Vue.extend({
   },
   watch: {
     title() {
-      this.hideSigninError();
+      this.unsetSlideConfigError();
+    },
+    is_public() {
+      this.unsetSlideConfigError();
     },
     remove() {
-      this.hideSigninError();
+      this.unsetSlideConfigError();
     },
   },
 });
@@ -175,7 +176,7 @@ input
       &:before
         -webkit-transform: translateX(26px);
         -ms-transform: translateX(26px);
-        transform: translateX(26px); 
+        transform: translateX(26px);
   &:focus
     & + .slider
       box-shadow: 0 0 1px #2196F3

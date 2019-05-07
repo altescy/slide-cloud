@@ -14,6 +14,7 @@ const initialState: Model.State = {
   hasSigninError: false,
   hasSignupError: false,
   createSlideError: '',
+  slideConfigError: '',
   isModalOpen: false,
   modalType: 'signup',
   editor_content: '# Hello, world.',
@@ -52,7 +53,13 @@ export default new Vuex.Store({
       state.createSlideError = message;
     },
     [VuexMutation.UNSET_CREATESLIDE_ERROR](state: Model.State) {
-      state.createSlideError = "";
+      state.createSlideError = '';
+    },
+    [VuexMutation.SET_SLIDECONFIG_ERROR](state: Model.State, message: string) {
+      state.slideConfigError = message;
+    },
+    [VuexMutation.UNSET_SLIDECONFIG_ERROR](state: Model.State) {
+      state.slideConfigError = '';
     },
     [VuexMutation.SET_USER](state: Model.State, user: Model.User) {
       state.user = user;
@@ -216,8 +223,8 @@ export default new Vuex.Store({
           commit(VuexMutation.CLOSE_MODAL);
         }
       } catch (error) {
-        // TODO: show error message
-        commit(VuexMutation.SET_CREATESLIDE_ERROR, error.response.data.err);
+        const msg = (error.response && error.response.data.err)? error.response.data.err : 'failed to create slide';
+        commit(VuexMutation.SET_CREATESLIDE_ERROR, msg);
         throw error;
       }
     },
@@ -249,7 +256,8 @@ export default new Vuex.Store({
           commit(VuexMutation.CLOSE_MODAL);
         }
       } catch (error) {
-        // TODO: show error message
+        const msg = (error.response && error.response.data.err)? error.response.data.err : 'udpate failed';
+        commit(VuexMutation.SET_SLIDECONFIG_ERROR, msg);
         throw error;
       }
     },
