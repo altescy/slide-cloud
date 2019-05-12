@@ -74,6 +74,7 @@ func main() {
 	// router.DELETE("/slide/:token/commit/:id", h.DeleteHistory)
 	// router.GET("/image/:token", h.GetImage)
 	// router.POST("/image", h.AddImage)
+	router.GET("/slideshow/:token", h.GetSlideshow)
 
 	addr := ":" + port
 	log.Printf("[INFO] start server %s", addr)

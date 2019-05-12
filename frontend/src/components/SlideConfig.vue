@@ -5,6 +5,9 @@
       title
       <input type="text" class="input" v-model='title' autofocus='true'>
     </div>
+    <div class="row" v-if="currentSlide">
+      link <a :href="'/slide/'+currentSlide.access_token" target=”_blank”>slide/{{currentSlide.access_token}}</a>
+    </div>
     <div class="row">
       public
       <label class="switch">
