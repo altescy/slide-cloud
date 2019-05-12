@@ -83,8 +83,8 @@ export default Vue.extend({
 
       const sec = document.createElement('section');
       sec.setAttribute('data-markdown', '');
-      sec.setAttribute('data-separator', '^---');
-      sec.setAttribute('data-separator-vertical', '^===');
+      sec.setAttribute('data-separator', '^---$');
+      sec.setAttribute('data-separator-vertical', '^===$');
       sec.setAttribute('data-separator-notes', '^Note:');
       sec.appendChild(content);
 
