@@ -15,8 +15,8 @@ declare global {
     RevealMarkdown: any;
   }
 }
-window.Reveal = window.Reveal || {};
-window.RevealMarkdown = window.RevealMarkdown || {};
+
+window.Reveal = require('reveal.js')
 
 export default Vue.extend({
   name: 'Preview',
@@ -65,13 +65,13 @@ export default Vue.extend({
         config: 'TeX-AMS_HTML-full',
       },
       dependencies: [
-        { src: 'reveal.js/plugin/markdown/marked.js',
+        { src: '/reveal.js/plugin/markdown/marked.js',
           condition() { return !!document.querySelector( '[data-markdown]' ); } },
-        { src: 'reveal.js/plugin/markdown/markdown.js',
+        { src: '/reveal.js/plugin/markdown/markdown.js',
           condition() { return !!document.querySelector( '[data-markdown]' ); } },
-        { src: 'reveal.js/plugin/highlight/highlight.js', async: true },
-        { src: 'reveal.js/plugin/notes/notes.js', async: true },
-        { src: 'reveal.js/plugin/math/math.js', async: true },
+        { src: '/reveal.js/plugin/highlight/highlight.js', async: true },
+        { src: '/reveal.js/plugin/notes/notes.js', async: true },
+        { src: '/reveal.js/plugin/math/math.js', async: true },
       ],
     });
   },
@@ -104,9 +104,16 @@ export default Vue.extend({
 });
 </script>
 
-<style scoped>
-.reveal {
-  margin: 0;
-  padding: 0;
-}
+<style lang="sass">
+@import '../../node_modules/reveal.js/css/reveal.css'
+@import '../../node_modules/reveal.js/css/theme/white.css'
+@import '../../node_modules/reveal.js/lib/css/monokai.css'
+
+.reveal
+  margin: 0
+  padding: 0
+  .slides
+    p,a,li,input
+      font-size: 42px !important
+      line-height: 1.3 !important
 </style>
