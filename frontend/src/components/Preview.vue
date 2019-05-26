@@ -53,17 +53,11 @@ export default Vue.extend({
       height: 800,
       controls: true,
       progress: true,
-      history: true,
       mouseWheel: true,
       center: true,
       overview: true,
-      previewLinks: true,
       slideNumber: 'c/t',
-      transition: 'none', // none/fade/slide/convex/concave/zoom
-      math: {
-        mathjax: 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js',
-        config: 'TeX-AMS_HTML-full',
-      },
+      transition: 'none',
       dependencies: [
         { src: '/reveal.js/plugin/markdown/marked.js',
           condition() { return !!document.querySelector( '[data-markdown]' ); } },
