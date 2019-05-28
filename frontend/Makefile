@@ -1,5 +1,6 @@
+DEST_NAME = dist
 DIR = $(shell pwd)
-DEST = $(DIR)/dist
+DEST = $(DIR)/$(DEST_NAME)
 NODE_MODULES = $(DIR)/node_modules
 REVEALJS = $(NODE_MODULES)/reveal.js
 
@@ -14,4 +15,4 @@ build:
 
 docker-build:
 	docker run --rm -v $(DIR):/workdir -w /workdir node:alpine \
-		sh -c "npm install && yarn build --dest $(DEST) && cp -R ./node_modules/reveal.js $(DEST)/reveal.js"
+		sh -c "npm install && yarn build --dest $(DEST_NAME) && cp -R ./node_modules/reveal.js $(DEST_NAME)/reveal.js"
