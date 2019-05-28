@@ -6,7 +6,7 @@ services:
             - "80:80"
         volumes:
             - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
-            - ./public:/public
+            - ./frontend/dist:/public
         restart: always
 
     slidecloud:
