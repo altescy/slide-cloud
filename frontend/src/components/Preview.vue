@@ -89,10 +89,15 @@ export default Vue.extend({
       }
     },
     updateSlides() {
-      window.RevealMarkdown.init().then(() => {
-        window.Reveal.toggleOverview(); window.Reveal.toggleOverview();
-        window.Reveal.sync();
-      });
+      let plugins = window.Reveal.getPlugins();
+      for (let i in plugins) {
+          let plugin = plugins[i];
+          if (typeof plugin.init === 'function') {
+            plugin.init();
+          }
+      }
+      window.Reveal.toggleOverview(); window.Reveal.toggleOverview();
+      window.Reveal.sync();
     },
   },
 });

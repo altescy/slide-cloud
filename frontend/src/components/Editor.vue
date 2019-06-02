@@ -1,5 +1,5 @@
 <template>
-  <div :id="editorId" class="editor"></div>
+  <div :id="editorId" class="editor tex2jax_ignore"></div>
 </template>
 
 
