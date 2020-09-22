@@ -4,6 +4,8 @@ Slide Cloud
 Slide Cloud is Markdown slide editor on Web browser.
 You can write / save / share your slides.
 
+![screenshot](https://user-images.githubusercontent.com/16734471/93876041-18c42300-fd11-11ea-80bd-94b3ff2acf3e.png)
+
 
 ### Deploy
 
