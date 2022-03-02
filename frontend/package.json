@@ -10,7 +10,7 @@
   "dependencies": {
     "axios": "^0.21.1",
     "brace": "^0.11.1",
-    "reveal.js": "^3.8.0",
+    "reveal.js": "^4.3.0",
     "vue": "^2.6.10",
     "vue-router": "^3.0.3",
     "vuemirror": "^0.9.3",
