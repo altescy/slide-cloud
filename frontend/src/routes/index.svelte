@@ -3,20 +3,28 @@
 	import 'codemirror/lib/codemirror.css';
 	import 'codemirror/theme/monokai.css';
 
-	let CodeMirror;
 	export let editor;
 
+	let CodeMirror;
 	let element: HTMLElement;
 
+	const importCodeMirror = async () => {
+		const [module] = await Promise.all([
+			import('codemirror'),
+			import('codemirror/keymap/vim'),
+			import('codemirror/mode/markdown/markdown')
+		]);
+		return module.default;
+	};
+
 	onMount(async () => {
-		const codemirror = await import('codemirror');
-		await import('codemirror/mode/markdown/markdown');
-		CodeMirror = codemirror.default;
+		CodeMirror = await importCodeMirror();
 
 		const config = {
 			mode: 'markdown',
 			theme: 'monokai',
-			lineNumbers: true
+			lineNumbers: true,
+			keyMap: 'vim'
 		};
 
 		editor = CodeMirror(element, config);
