@@ -1,6 +1,6 @@
 module github.com/altescy/slide-cloud
 
-go 1.16
+go 1.18
 
 require (
 	github.com/elazarl/go-bindata-assetfs v1.0.1 // indirect
