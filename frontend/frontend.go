@@ -30,7 +30,7 @@ func NewBinaryFS() *BinaryFS {
 		Asset:     Asset,
 		AssetDir:  AssetDir,
 		AssetInfo: AssetInfo,
-		Prefix:    "/build",
+		Prefix:    "/out",
 	}
 	return &BinaryFS{
 		fs,
