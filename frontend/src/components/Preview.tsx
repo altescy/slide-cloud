@@ -1,19 +1,13 @@
-import { Marp } from '@marp-team/marp-core';
-import parse from 'html-react-parser';
+import parse, { Element } from 'html-react-parser';
 
-const marp = new Marp({
-  html: true,
-  emoji: {
-    unicode: true,
-    twemoji: {
-      base: '/resources/twemoji/',
-    },
-  },
-  math: 'katex',
-  markdown: {
-    breaks: false,
-  },
-  inlineSVG: true,
+import useMarp from '@/hooks/marp';
+
+const parser = (input: string) => parse(input, {
+  replace: domNode => {
+    if (domNode instanceof Element && domNode.attribs.class === 'remove') {
+      return <></>;
+    }
+  }
 });
 
 interface Props {
@@ -21,26 +15,36 @@ interface Props {
 }
 
 const Preview = ({ source }: Props) => {
+  const marp = useMarp({
+    html: true,
+    emoji: {
+      unicode: true,
+      twemoji: {
+        base: '/resources/twemoji/',
+      },
+    },
+    math: 'katex',
+    markdown: {
+      breaks: false,
+    },
+    inlineSVG: true,
+  });
   const compose = (source: string): string => {
     const { html, css } = marp.render(source);
     return `
-      <html>
-        <head>
-          <style>
-            ${css}
-            .marpit>svg {
-              margin: 30px;
-              box-shadow: 0px 0px 20px 1px rgba(0, 0, 0, 0.1);
-            }
-          </style>
-        </head>
-        <body>
-          ${html}
-        </body>
-      </html>
+      <style>
+        ${css}
+        .marpit>svg {
+          margin: 30px;
+          box-shadow: 0px 0px 20px 1px rgba(0, 0, 0, 0.1);
+        }
+      </style>
+      <body>
+        ${html}
+      </body>
     `;
   };
-  return <div className="">{parse(compose(source))}</div>;
+  return <div>{parser(compose(source))}</div>;
 };
 
 export default Preview;
