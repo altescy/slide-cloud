@@ -5,10 +5,11 @@ import (
 	"strings"
 
 	"github.com/altescy/slide-cloud/frontend"
+	"github.com/altescy/slide-cloud/internal/controller"
 	"github.com/gin-gonic/gin"
 )
 
-func NewEngine() *gin.Engine {
+func NewEngine(handler *controller.Handler) *gin.Engine {
 	engine := gin.Default()
 
 	apiGroup := engine.Group("/api")
@@ -18,6 +19,8 @@ func NewEngine() *gin.Engine {
 				"status": "ok",
 			})
 		})
+		apiGroup.POST("/slides", handler.CreateSlide)
+		apiGroup.GET("/slides/:id", handler.GetSlideByID)
 	}
 
 	engine.NoRoute(func(c *gin.Context) {
