@@ -1,35 +1,33 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import React from 'react';
+import { Flex } from '@chakra-ui/react';
+import Editor from '@/components/Editor';
+import Preview from '@/components/Preview';
 
-function App() {
-  const [count, setCount] = useState(0)
+const App = () => {
+  const [content, setContent] = React.useState<string>('');
+  const [line, setLine] = React.useState<number>(0);
+
+  const handleValueChange = (value: string) => {
+    setContent(value);
+  }
+
+  const currentPage = React.useMemo(() => {
+    let page = 1;
+    const lines = content.split('\n');
+    for (let i = 0; i < lines.length; i++) {
+      if (i >= line) break;
+      if (lines[i].startsWith('---')) {
+        page++;
+      }
+    }
+    return page;
+  }, [line, content]);
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+    <Flex w="100vw" h="100vh">
+      <Editor w="full" h="full" onValueChange={handleValueChange} onLineChange={setLine} />
+      <Preview w="full" h="full" markdown={content}  currentPage={currentPage} />
+    </Flex>
   )
 }
-
 export default App
